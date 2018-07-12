@@ -1,0 +1,41 @@
+version: "3"
+services:
+  app:
+    build: .
+    volumes:
+      - .:/var/www/html
+      - /dev/log:/dev/log
+    labels:
+      - "akmb.service"
+      - "com.dnsdock.alias=akmb.local"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      default:
+        aliases:
+          - akmb.local
+
+  redis:
+    image: redis:latest
+    labels:
+      - "akmb.service"
+      - "com.dnsdock.alias=akmb.redis.local"
+    networks:
+      default:
+        aliases:
+          - akbm.redis.local
+
+  mysql:
+    image: mysql:8.0.11
+    privileged: true
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=akmb_dev
+    labels:
+      - "akmb.service"
+      - "com.dnsdock.alias=akmb.mysql.local"
+    networks:
+      default:
+        aliases:
+          - akmb.mysql.local
