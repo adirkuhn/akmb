@@ -11,6 +11,8 @@ services:
     depends_on:
       - mysql
       - redis
+    ports:
+      - 8888:80
     networks:
       default:
         aliases:

@@ -1,0 +1,18 @@
+{
+    "name": "adirkuhn/akmb",
+    "description": "Assigment test",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adir Kuhn",
+            "email": "adirkuhn@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Akmb\\Core\\": "core/"
+        }
+    }
+}
