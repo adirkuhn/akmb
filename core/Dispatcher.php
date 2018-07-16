@@ -2,6 +2,8 @@
 namespace Akmb\Core;
 
 use Akmb\Core\Controllers\ErrorController;
+use Akmb\Core\Exceptions\ActionNotFoundException;
+use Akmb\Core\Exceptions\ControllerNotFoundException;
 use Akmb\Core\Extra\Logger;
 
 class Dispatcher
@@ -40,7 +42,17 @@ class Dispatcher
     public function dispatch()
     {
         try {
-            $this->router->getController();
+            return $this->router->callAction();
+        } catch (ControllerNotFoundException | ActionNotFoundException $e) {
+            $msg = '404 we can\'t find what you are looking for.';
+            $this->logger->error(sprintf(
+                '%s: [%s] - [%s]',
+                $msg,
+                $e->getMessage(),
+                $e->getTraceAsString()
+            ));
+
+            return (new ErrorController($this->request))->notFound($msg);
         } catch (\Throwable $e) {
             $msg = 'Unhandled error happened';
             $this->logger->error(sprintf(

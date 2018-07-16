@@ -4,7 +4,7 @@ namespace Akmb\Core;
 class Request
 {
     /**
-     * @var string $server
+     * @var array $server
      */
     private $server;
 
@@ -31,21 +31,33 @@ class Request
         $this->get = $get;
     }
 
+    /**
+     * @return string
+     */
     public function getUri(): string
     {
         return $this->server['REQUEST_URI'] ?? '';
     }
 
+    /**
+     * @return array
+     */
     public function getServer(): array
     {
         return $this->server;
     }
 
+    /**
+     * @return array
+     */
     public function getPost(): array
     {
         return $this->post;
     }
 
+    /**
+     * @return array
+     */
     public function getGet(): array
     {
         return $this->get;
