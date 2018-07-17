@@ -12,11 +12,8 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Akmb\\Core\\": "core/",
-            "Akmb\\App\\": "app/",
-            "Akmb\\Test\\": "test/",
-            "Akmb\\Test\\Core\\": "test/core/",
-            "Akmb\\Test\\App\\": "test/app/"
+            "Akmb\\": "src/",
+            "Akmb\\Test\\": "test/"
         }
     },
     "require-dev": {
