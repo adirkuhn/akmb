@@ -1,7 +1,7 @@
 <?php
 namespace Akmb\App\Controllers;
 
-use Akmb\Core\Controller\DefaultController;
+use Akmb\Core\Controllers\DefaultController;
 
 class MainController extends DefaultController
 {

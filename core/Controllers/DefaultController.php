@@ -17,6 +17,24 @@ class DefaultController
 
     public function render($msg)
     {
-        return $msg;
+        $this->setDefaultHeaders();
+        return json_encode([
+            'status' => 'success',
+            'data' => $msg
+        ]);
+    }
+
+    public function renderError(string $msg)
+    {
+        $this->setDefaultHeaders();
+        return json_encode([
+            'status' => 'error',
+            'message' => $msg
+        ]);
+    }
+
+    private function setDefaultHeaders()
+    {
+        header('Content-Type: application/json');
     }
 }

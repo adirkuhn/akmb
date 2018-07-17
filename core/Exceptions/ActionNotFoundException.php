@@ -1,7 +1,7 @@
 <?php
 namespace Akmb\Core\Exceptions;
 
-class ControllerNotFoundException extends \Exception
+class ActionNotFoundException extends \Exception
 {
     /**
      * @var string $message
@@ -13,10 +13,10 @@ class ControllerNotFoundException extends \Exception
      */
     protected $code;
 
-    public function __construct()
+    public function __construct(string $controller)
     {
-        $this->message = 'Controller was not found.';
-        $this->code = 1;
+        $this->message = 'Action not found for controller ' . $controller;
+        $this->code = 2;
 
         parent::__construct($this->message, $this->code);
     }

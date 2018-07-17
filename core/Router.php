@@ -2,6 +2,7 @@
 namespace Akmb\Core;
 
 use Akmb\Core\Controllers\DefaultController;
+use Akmb\Core\Exceptions\ActionNotFoundException;
 use Akmb\Core\Exceptions\ControllerNotFoundException;
 
 class Router
@@ -42,16 +43,27 @@ class Router
         $controller = $this->getControllerWithNameSpace();
 
         if (class_exists($controller)) {
-            return new $controller;
+            return new $controller($this->request);
         }
 
         throw new ControllerNotFoundException();
     }
 
+    public function callAction()
+    {
+        $controller = $this->getController();
+
+        if (method_exists($controller, $this->action)) {
+            return call_user_func([$controller, $this->action], $this->params);
+        }
+
+        throw new ActionNotFoundException(get_class($controller));
+    }
+
     private function getControllerWithNameSpace()
     {
         return sprintf(
-            '%s\\App\\%s',
+            '%s\\App\\Controllers\\%sController',
             strtok(__NAMESPACE__, '\\'),
             $this->controller
         );
@@ -60,11 +72,15 @@ class Router
     private function parseRequest(): void
     {
         if ($this->request->getUri() === '/') {
-            $controller = 'MainController';
+            $controller = 'Main';
             $action = 'index';
-            $params = '';
+            $params = [];
         } else {
-            list(, $controller, $action, $params) = explode('/', $this->request->getUri());
+            $data = explode('/', $this->request->getUri());
+
+            $controller = $data[1] ?? '';
+            $action = $data[2] ?? '';
+            $params = isset($data[3]) ? array_slice($data, 3) : [];
         }
 
         $this->controller = ucfirst($controller);
