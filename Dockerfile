@@ -41,6 +41,7 @@ RUN apk update \
                 git \
                 openssh \
                 redis \
+                rsyslog \
     && mkdir /run/apache2 \
     && mkdir -p /var/www/opcache \
     && chown apache /var/www/opcache \
