@@ -4,7 +4,6 @@ services:
     build: .
     volumes:
       - .:/var/www/html
-      - /dev/log:/dev/log
     labels:
       - "akmb.service"
       - "com.dnsdock.alias=akmb.local"

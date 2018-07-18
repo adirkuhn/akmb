@@ -49,17 +49,25 @@ class Router
         throw new ControllerNotFoundException();
     }
 
+    /**
+     * @return mixed
+     * @throws ActionNotFoundException
+     * @throws ControllerNotFoundException
+     */
     public function callAction()
     {
         $controller = $this->getController();
 
         if (method_exists($controller, $this->action)) {
-            return call_user_func([$controller, $this->action], $this->params);
+            return call_user_func([$controller, $this->action], $this->request);
         }
 
         throw new ActionNotFoundException(get_class($controller));
     }
 
+    /**
+     * @return string
+     */
     private function getControllerWithNameSpace()
     {
         return sprintf(

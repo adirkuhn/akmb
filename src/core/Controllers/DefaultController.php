@@ -15,6 +15,11 @@ class DefaultController
         $this->request = $request;
     }
 
+    public function index()
+    {
+        $this->render(get_class($this));
+    }
+
     public function render($msg)
     {
         $this->setDefaultHeaders();

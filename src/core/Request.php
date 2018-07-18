@@ -3,6 +3,10 @@ namespace Akmb\Core;
 
 class Request
 {
+    const POST = 'POST';
+
+    const GET = 'GET';
+
     /**
      * @var array $server
      */

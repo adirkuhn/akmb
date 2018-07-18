@@ -53,7 +53,6 @@ RUN apk update \
 # Add apache to run and configure
 COPY ./docker/etc/apache2/default.conf /etc/apache2/conf.d/default.conf
 COPY ./docker/etc/pool.d/alpine-www.conf /etc/php7/php-fpm.d/www.conf
-COPY . /var/www/html/
 
 WORKDIR /var/www/html
 CMD sh /entrypoint.sh

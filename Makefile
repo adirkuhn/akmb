@@ -13,7 +13,7 @@ composer:
 	docker-compose exec -T app php ./bin/composer.phar install
 
 logs:
-	docker-compose exec app $(tail -f /var/log/*/*)
+	docker-compose exec -T app tail -f /var/log/messages
 
 psr2:
 	docker-compose exec -T app php ./vendor/bin/phpcs --standard=PSR2 --ignore=vendor .
