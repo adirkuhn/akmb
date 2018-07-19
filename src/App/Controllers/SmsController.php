@@ -2,11 +2,12 @@
 namespace Akmb\App\Controllers;
 
 use Akmb\Core\Controllers\DefaultController;
+use Akmb\Core\Extra\Validator;
 use Akmb\Core\Request;
 
 class SmsController extends DefaultController
 {
-    private $acceptMethod = 'POST';
+    use Validator;
 
     private $requiredParams = [
         'destination',
@@ -15,24 +16,13 @@ class SmsController extends DefaultController
 
     /**
      * Check for required params
-     * 
-     * @param array $params
-     * @return array
+     *
+     * @param Request $request
+     * @return bool
      */
-    private function validate(array $params): array
+    public function validate(Request $request): bool
     {
-        if (array_intersect(array_keys($params), $this->requiredParams) !== count($this->requiredParams)) {
-            return [
-                false,
-                sprintf(
-                    'Missing required params. Required [%s] - Received [%s]',
-                    http_build_query($this->requiredParams),
-                    http_build_query($params)
-                )
-            ];
-        }
-
-        return [true, ''];
+        return $this->validateKeysPresence($this->requiredParams, $request->getPost(), false);
     }
 
     public function send(Request $request)
@@ -40,8 +30,7 @@ class SmsController extends DefaultController
         $server = $request->getServer();
 
         if ($server['REQUEST_METHOD'] === $request::POST) {
-            $a = $this->validate($request->getPost());
-            syslog(1, var_export($a, 1));
+
             return $this->render('Sending Sms');
         }
 

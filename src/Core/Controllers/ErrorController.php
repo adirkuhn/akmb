@@ -19,6 +19,18 @@ class ErrorController extends DefaultController
         return $this->renderError($msg);
     }
 
+    public function badRequest($msg): string
+    {
+        $this->setBadRequestHeaders();
+
+        return $this->renderError($msg);
+    }
+
+    private function setBadRequestHeaders()
+    {
+        $this->setHeaders('400 Bad request', 400);
+    }
+
     private function setNotFoundHeaders()
     {
         $this->setHeaders('404 not found', 404);

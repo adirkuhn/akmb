@@ -2,11 +2,16 @@
 namespace Akmb\Core;
 
 use Akmb\Core\Controllers\DefaultController;
+use Akmb\Core\Controllers\ErrorController;
 use Akmb\Core\Exceptions\ActionNotFoundException;
 use Akmb\Core\Exceptions\ControllerNotFoundException;
 
 class Router
 {
+    const VALIDATE = 'validate';
+
+    const GET_ERRORS = 'getErrors';
+
     /**
      * @var Request|null $request
      */
@@ -58,6 +63,16 @@ class Router
     {
         $controller = $this->getController();
 
+        //check if there is validation
+        if (method_exists($controller, self::VALIDATE)) {
+            if (call_user_func([$controller, self::VALIDATE], $this->request) === false) {
+                return (new ErrorController($this->request))->badRequest(json_encode(
+                    call_user_func([$controller, self::GET_ERRORS])
+                ));
+            }
+        }
+
+        //call the controller
         if (method_exists($controller, $this->action)) {
             return call_user_func([$controller, $this->action], $this->request);
         }
