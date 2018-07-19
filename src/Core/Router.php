@@ -63,6 +63,14 @@ class Router
     {
         $controller = $this->getController();
 
+        if ($controller->isAllowedRequestMethod($this->request->getRequestMethod()) === false)
+        {
+            return (new ErrorController($this->request))->methodIsNotAllowed(sprintf(
+               'Request method [%s] is not allowed.',
+               $this->request->getRequestMethod()
+            ));
+        }
+
         //check if there is validation
         if (method_exists($controller, self::VALIDATE)) {
             if (call_user_func([$controller, self::VALIDATE], $this->request) === false) {

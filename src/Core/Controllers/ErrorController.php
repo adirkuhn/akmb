@@ -26,6 +26,12 @@ class ErrorController extends DefaultController
         return $this->renderError($msg);
     }
 
+    public function methodIsNotAllowed($msg): string
+    {
+        $this->setHeaders('method is not allowed', 405);
+        return $this->renderError($msg);
+    }
+
     private function setBadRequestHeaders()
     {
         $this->setHeaders('400 Bad request', 400);
@@ -39,12 +45,5 @@ class ErrorController extends DefaultController
     private function setInternalServerErrorHeaders()
     {
         $this->setHeaders('500 Internal Server Error', 500);
-    }
-
-    private function setHeaders(string $msg, int $httpStatusCode)
-    {
-        $server = $this->request->getServer();
-        $serverProtocol = $server['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
-        header($serverProtocol . ' ' . $msg, true, $httpStatusCode);
     }
 }

@@ -44,6 +44,14 @@ class Request
     }
 
     /**
+     * @return string
+     */
+    public function getRequestMethod(): string
+    {
+        return $this->server['REQUEST_METHOD'] ?? '';
+    }
+
+    /**
      * @return array
      */
     public function getServer(): array

@@ -14,6 +14,14 @@ class SmsController extends DefaultController
         'message'
     ];
 
+    public function __construct(Request $request)
+    {
+        $this->setAllowGet(false);
+        $this->setAllowPost(true);
+
+        parent::__construct($request);
+    }
+
     /**
      * Check for required params
      *
@@ -27,17 +35,6 @@ class SmsController extends DefaultController
 
     public function send(Request $request)
     {
-        $server = $request->getServer();
-
-        if ($server['REQUEST_METHOD'] === $request::POST) {
-
-            return $this->render('Sending Sms');
-        }
-
-        return $this->renderError(sprintf(
-            '[%s] method is not supported, please use [%s]',
-            $server['REQUEST_METHOD'],
-            $request::POST
-        ));
+        return $this->render('Sending Sms');
     }
 }
