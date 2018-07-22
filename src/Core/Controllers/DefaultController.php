@@ -1,10 +1,13 @@
 <?php
 namespace Akmb\Core\Controllers;
 
+use Akmb\Core\Extra\Validator;
 use Akmb\Core\Request;
 
 class DefaultController
 {
+    use Validator;
+
     /**
      * @var Request|null $request
      */
@@ -49,6 +52,10 @@ class DefaultController
         return $this->allowPost;
     }
 
+    /**
+     * @param string $method
+     * @return bool
+     */
     public function isAllowedRequestMethod(string $method) {
         switch ($method) {
             case Request::POST:
@@ -58,6 +65,18 @@ class DefaultController
             default:
                 return false;
         }
+    }
+
+    /**
+     * Override into controller with custom function validations
+     * before execute action
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function validate(Request $request): bool
+    {
+        return true;
     }
 
     /**

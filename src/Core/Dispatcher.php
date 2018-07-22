@@ -5,6 +5,7 @@ use Akmb\Core\Controllers\ErrorController;
 use Akmb\Core\Exceptions\ActionNotFoundException;
 use Akmb\Core\Exceptions\ControllerNotFoundException;
 use Akmb\Core\Extra\Logger;
+use Akmb\Core\Libs\Redis\Redis;
 
 class Dispatcher
 {
@@ -24,19 +25,23 @@ class Dispatcher
     private $logger = null;
 
     /**
+     * @var Redis|null $redis
+     */
+    private $redis = null;
+
+    /**
      * Dispatcher constructor.
      * @param Router $router
      * @param Request $request
      * @param Logger|null $logger
+     * @param Redis $redis
      */
-    public function __construct(Router $router, Request $request, Logger $logger = null)
+    public function __construct(Router $router, Request $request, Logger $logger, Redis $redis)
     {
         $this->router = $router;
         $this->request = $request;
-
-        if ($logger == null) {
-            $this->logger = new Logger();
-        }
+        $this->logger = $logger;
+        $this->redis = $redis;
     }
 
     public function dispatch()

@@ -1,3 +1,0 @@
-redis:
-  host: redis.local
-  port: 6379

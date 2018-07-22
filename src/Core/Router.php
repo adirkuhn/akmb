@@ -8,10 +8,6 @@ use Akmb\Core\Exceptions\ControllerNotFoundException;
 
 class Router
 {
-    const VALIDATE = 'validate';
-
-    const GET_ERRORS = 'getErrors';
-
     /**
      * @var Request|null $request
      */
@@ -72,12 +68,10 @@ class Router
         }
 
         //check if there is validation
-        if (method_exists($controller, self::VALIDATE)) {
-            if (call_user_func([$controller, self::VALIDATE], $this->request) === false) {
-                return (new ErrorController($this->request))->badRequest(json_encode(
-                    call_user_func([$controller, self::GET_ERRORS])
-                ));
-            }
+        if ($controller->validate($this->request) === false) {
+            return (new ErrorController($this->request))->badRequest(json_encode(
+                $controller->getErrors()
+            ));
         }
 
         //call the controller
