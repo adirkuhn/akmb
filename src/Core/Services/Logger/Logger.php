@@ -1,7 +1,9 @@
 <?php
-namespace Akmb\Core\Extra;
+namespace Akmb\Core\Services\Logger;
 
-class Logger
+use Akmb\Core\ServiceContainer\Interfaces\ServiceInterface;
+
+class Logger implements ServiceInterface
 {
     public function __construct()
     {
@@ -25,5 +27,10 @@ class Logger
     protected function log($priority, $msg): void
     {
         syslog($priority, $msg);
+    }
+
+    public function getServiceIdentifier(): string
+    {
+        return self::class;
     }
 }

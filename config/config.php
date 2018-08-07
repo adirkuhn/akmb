@@ -2,7 +2,8 @@
 
 $config = [
     'redis' => [
-        'host' => 'redis.local',
+        'scheme' => 'tcp',
+        'host' => 'akmb.redis.local',
         'port' => '6379',
         'user' => '',
         'password' => ''

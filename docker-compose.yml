@@ -25,7 +25,7 @@ services:
     networks:
       default:
         aliases:
-          - akbm.redis.local
+          - akmb.redis.local
 
   mysql:
     image: mysql:8.0.11

@@ -3,6 +3,7 @@ namespace Akmb\Core\Controllers;
 
 use Akmb\Core\Extra\Validator;
 use Akmb\Core\Request;
+use Akmb\Core\ServiceContainer\ServiceContainer;
 
 class DefaultController
 {
@@ -24,12 +25,19 @@ class DefaultController
     protected $allowPost = true;
 
     /**
+     * @var ServiceContainer|null $serviceContainer
+     */
+    protected $serviceContainer = null;
+
+    /**
      * DefaultController constructor.
      * @param Request $request
+     * @param ServiceContainer $serviceContainer
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, ServiceContainer $serviceContainer)
     {
         $this->request = $request;
+        $this->serviceContainer = $serviceContainer;
     }
 
     /**

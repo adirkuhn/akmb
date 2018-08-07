@@ -1,9 +1,6 @@
 <?php
 namespace Akmb\Core;
 
-use Akmb\Core\Controllers\DefaultController;
-use Akmb\Core\Controllers\ErrorController;
-use Akmb\Core\Exceptions\ActionNotFoundException;
 use Akmb\Core\Exceptions\ControllerNotFoundException;
 
 class Router
@@ -36,50 +33,23 @@ class Router
     }
 
     /**
-     * @return DefaultController
+     * @return string
      * @throws ControllerNotFoundException
      */
-    public function getController(): DefaultController
+    public function getController(): string
     {
         $controller = $this->getControllerWithNameSpace();
 
         if (class_exists($controller)) {
-            return new $controller($this->request);
+            return $controller;
         }
 
         throw new ControllerNotFoundException();
     }
 
-    /**
-     * @return mixed
-     * @throws ActionNotFoundException
-     * @throws ControllerNotFoundException
-     */
-    public function callAction()
+    public function getAction(): string
     {
-        $controller = $this->getController();
-
-        if ($controller->isAllowedRequestMethod($this->request->getRequestMethod()) === false)
-        {
-            return (new ErrorController($this->request))->methodIsNotAllowed(sprintf(
-               'Request method [%s] is not allowed.',
-               $this->request->getRequestMethod()
-            ));
-        }
-
-        //check if there is validation
-        if ($controller->validate($this->request) === false) {
-            return (new ErrorController($this->request))->badRequest(json_encode(
-                $controller->getErrors()
-            ));
-        }
-
-        //call the controller
-        if (method_exists($controller, $this->action)) {
-            return call_user_func([$controller, $this->action], $this->request);
-        }
-
-        throw new ActionNotFoundException(get_class($controller));
+        return $this->action;
     }
 
     /**

@@ -1,9 +1,12 @@
 <?php
 namespace Akmb\App\Controllers;
 
+use Akmb\App\Constants\Queue;
 use Akmb\Core\Controllers\DefaultController;
 use Akmb\Core\Extra\Validator;
 use Akmb\Core\Request;
+use Akmb\Core\ServiceContainer\ServiceContainer;
+use Akmb\Core\Services\Redis\Redis;
 
 class SmsController extends DefaultController
 {
@@ -14,12 +17,12 @@ class SmsController extends DefaultController
         'message'
     ];
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, ServiceContainer $serviceContainer)
     {
         $this->setAllowGet(false);
         $this->setAllowPost(true);
 
-        parent::__construct($request);
+        parent::__construct($request, $serviceContainer);
     }
 
     /**
@@ -33,8 +36,40 @@ class SmsController extends DefaultController
         return $this->validateKeysPresence($this->requiredParams, $request->getPost(), false);
     }
 
-    public function send(Request $request)
+    /**
+     * @param Request $request
+     * @return string
+     * @throws \Akmb\Core\ServiceContainer\Exceptions\ServiceNotFoundException
+     */
+    public function send(Request $request): string
     {
-        return $this->render('Sending Sms');
+        /** @var Redis $redis */
+        $redis = $this->serviceContainer->getService(Redis::class);
+
+        try {
+            $postData = $request->getPost();
+
+            $message = [
+                'destination' => $postData['destination'],
+                'message' => $postData['message']
+            ];
+
+            $serializeMessage = serialize($message);
+            $setMember = md5($serializeMessage);
+
+            if ($redis->getSetsMember(Queue::SmsSetMessageName, $setMember)) {
+                return $this->renderError('Duplicated message.');
+            }
+
+            $redis->addSetsMember(Queue::SmsSetMessageName, $setMember);
+            $redis->saveDataToQueue(Queue::SmsListMessageName, $serializeMessage);
+
+            return $this->render('Message sent.');
+        } catch (\Exception $e) {
+            return $this->renderError(sprintf(
+                'Unable to send SMS. Error: [%s]',
+                $e->getMessage()
+            ));
+        }
     }
 }

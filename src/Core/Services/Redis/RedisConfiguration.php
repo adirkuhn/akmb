@@ -1,10 +1,13 @@
 <?php
-namespace Akmb\Core\Libs\Redis;
+namespace Akmb\Core\Services\Redis;
 
-use Akmb\Core\Libs\Redis\Interfaces\RedisConfigurationInterface;
+use Akmb\Core\Services\Redis\Interfaces\RedisConfigurationInterface;
 
 class RedisConfiguration implements RedisConfigurationInterface
 {
+    /** @var string $scheme */
+    private $scheme;
+
     /**
      * @var string $host
      */
@@ -27,17 +30,24 @@ class RedisConfiguration implements RedisConfigurationInterface
 
     /**
      * RedisConfiguration constructor.
+     * @param string $scheme
      * @param string $host
      * @param string $port
      * @param string $user
      * @param string $password
      */
-    public function __construct(string $host, string $port, string $user, string $password)
+    public function __construct(string $scheme, string $host, string $port, string $user, string $password)
     {
+        $this->scheme = $scheme;
         $this->host = $host;
         $this->port = $port;
         $this->user = $user;
         $this->password = $password;
+    }
+
+    public function getScheme(): string
+    {
+        return $this->scheme;
     }
 
     public function getHost(): string

@@ -48,7 +48,7 @@ class Request
      */
     public function getRequestMethod(): string
     {
-        return $this->server['REQUEST_METHOD'] ?? '';
+        return $this->server['REQUEST_METHOD'] ?? self::GET;
     }
 
     /**
