@@ -1,7 +1,8 @@
 <?php
 namespace Akmb\App\Controllers;
 
-use Akmb\App\Constants\Queue;
+use Akmb\App\Entities\Message;
+use Akmb\App\Message\MessageQueue;
 use Akmb\Core\Controllers\DefaultController;
 use Akmb\Core\Extra\Validator;
 use Akmb\Core\Request;
@@ -49,20 +50,17 @@ class SmsController extends DefaultController
         try {
             $postData = $request->getPost();
 
-            $message = [
-                'destination' => $postData['destination'],
-                'message' => $postData['message']
-            ];
+            $message = new Message();
+            $message->setDestination($postData['destination']);
+            $message->setMessage($postData['message']);
 
-            $serializeMessage = serialize($message);
-            $setMember = md5($serializeMessage);
+            $messageQueue = new MessageQueue($redis);
 
-            if ($redis->getSetsMember(Queue::SmsSetMessageName, $setMember)) {
+            if ($messageQueue->isDuplicated($message)) {
                 return $this->renderError('Duplicated message.');
             }
 
-            $redis->addSetsMember(Queue::SmsSetMessageName, $setMember);
-            $redis->saveDataToQueue(Queue::SmsListMessageName, $serializeMessage);
+            $messageQueue->queueMessage($message);
 
             return $this->render('Message sent.');
         } catch (\Exception $e) {

@@ -38,9 +38,9 @@ class Redis implements ServiceInterface
         return $this->redisConnection->llen($queueName);
     }
 
-    public function getDataFromQueue(string $queueName): array
+    public function getDataFromQueue(string $queueName): string
     {
-        return unserialize($this->redisConnection->lpop($queueName));
+        return $this->redisConnection->lpop($queueName);
     }
 
     private function getConnection()
@@ -68,5 +68,10 @@ class Redis implements ServiceInterface
     public function addSetsMember(string $setName, string $member): int
     {
         return $this->redisConnection->sadd($setName, [$member]);
+    }
+
+    public function removeSetsMember(string $setName, string $member): int
+    {
+        return $this->redisConnection->srem($setName, $member);
     }
 }

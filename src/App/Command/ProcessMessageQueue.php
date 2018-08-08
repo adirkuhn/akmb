@@ -28,11 +28,6 @@ class ProcessMessageQueue
         $this->redis = $serviceContainer->getService(Redis::class);
     }
 
-    public function hasMessagesInQueue()
-    {
-        return $this->redis->countQueue(Queue::SmsListMessageName) > 0;
-    }
-
     public function sendMessage()
     {
         $queuedMessage = $this->redis->getDataFromQueue(Queue::SmsListMessageName);
