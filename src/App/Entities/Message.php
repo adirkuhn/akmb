@@ -3,6 +3,9 @@ namespace Akmb\App\Entities;
 
 class Message
 {
+    const GSM7_MSG_LEN = 160;
+    const UNICODE_MSG_LEN = 70;
+
     /**
      * @var string $destination
      */
@@ -59,5 +62,26 @@ class Message
     public function serialize(): string
     {
         return serialize($this);
+    }
+
+    public function prepareMessage(): array
+    {
+        if ($this->isMultiPart()) {
+
+        } else {
+            return $this->getMessage();
+        }
+    }
+
+    public function isMultiPart(): bool
+    {
+        return strlen($this->getMessage()) > 160;
+    }
+
+    function isGSM7() {
+        return (preg_match(
+            '/^[\x{20}-\x{7E}£¥èéùìòÇ\rØø\nÅåΔ_ΦΓΛΩΠΨΣΘΞ\x{1B}ÆæßÉ ¤¡ÄÖÑÜ§¿äöñüà\x{0C}€]*$/u',
+            $this->getMessage()
+            ) === 1);
     }
 }
