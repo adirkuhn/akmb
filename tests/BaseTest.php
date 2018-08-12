@@ -1,5 +1,5 @@
 <?php
-namespace Akmb\Test\Core;
+namespace Akmb\Test;
 
 use Akmb\Core\Request;
 use Akmb\Core\Router;
@@ -31,5 +31,19 @@ class BaseTest extends TestCase
         $serviceContainer->addService(new Logger());
 
         return $serviceContainer;
+    }
+
+    /**
+     * @param $obj
+     * @param $name
+     * @param array $args
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    protected function callMethod($obj, $name, array $args = []) {
+        $class = new \ReflectionClass($obj);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($obj, $args);
     }
 }

@@ -44,7 +44,7 @@ class MessageQueue
         return true;
     }
 
-    public function popMessageFromQueue(): Message
+    public function popMessageFromQueue(): ?Message
     {
         $data = $this->redis->getDataFromQueue(self::QUEUE_NAME);
 

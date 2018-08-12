@@ -11,6 +11,7 @@ trait Validator
 
     /**
      * Method to ease the mock of $errors attribute
+     * @param $errors
      */
     public function setErrors($errors)
     {
@@ -59,5 +60,21 @@ trait Validator
         }
 
         return $valid;
+    }
+
+    /**
+     * @param string $pattern
+     * @param string $value
+     * @param string $error
+     * @return bool
+     */
+    protected function validatePattern(string $pattern, string $value, string $error = 'Pattern does not match'): bool
+    {
+        if (preg_match($pattern, $value) === 1) {
+            return true;
+        }
+
+        $this->addError($value, $error);
+        return false;
     }
 }

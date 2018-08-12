@@ -108,7 +108,7 @@ class DefaultController
      */
     public function index()
     {
-        $this->render(get_class($this));
+        return $this->render(get_class($this));
     }
 
     /**

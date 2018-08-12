@@ -34,27 +34,28 @@ class SmsController extends DefaultController
      */
     public function validate(Request $request): bool
     {
-        return $this->validateKeysPresence($this->requiredParams, $request->getPost(), false);
+        return $this->validateKeysPresence($this->requiredParams, $request->getPost(), false)
+            && $this->validatePattern('/^[1-9]{1}[0-9]{3,14}$/', $request->getPost()['destination'], 'Invalid MSISDN');
+
     }
 
     /**
      * @param Request $request
      * @return string
-     * @throws \Akmb\Core\ServiceContainer\Exceptions\ServiceNotFoundException
      */
     public function send(Request $request): string
     {
-        /** @var Redis $redis */
-        $redis = $this->serviceContainer->getService(Redis::class);
-
         try {
+            /** @var Redis $redis */
+            $redis = $this->serviceContainer->getService(Redis::class);
+
             $postData = $request->getPost();
 
             $message = new Message();
             $message->setDestination($postData['destination']);
             $message->setMessage($postData['message']);
 
-            $messageQueue = new MessageQueue($redis);
+            $messageQueue = $this->getMessageQueue($redis);
 
             if ($messageQueue->isDuplicated($message)) {
                 return $this->renderError('Duplicated message.');
@@ -69,5 +70,10 @@ class SmsController extends DefaultController
                 $e->getMessage()
             ));
         }
+    }
+
+    public function getMessageQueue(Redis $redis): MessageQueue
+    {
+        return new MessageQueue($redis);
     }
 }

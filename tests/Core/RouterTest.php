@@ -2,9 +2,9 @@
 namespace Akmb\Test\Core;
 
 use Akmb\App\Controllers\MainController;
-use Akmb\Core\Exceptions\ActionNotFoundException;
 use Akmb\Core\Exceptions\ControllerNotFoundException;
 use Akmb\Core\Router;
+use Akmb\Test\BaseTest;
 
 class RouterTest extends BaseTest
 {

@@ -9,24 +9,24 @@ class Logger implements ServiceInterface
     {
     }
 
-    public function error($msg): void
+    public function error($msg): bool
     {
-        $this->log(LOG_ERR, $msg);
+        return $this->log(LOG_ERR, $msg);
     }
 
-    public function warning($msg): void
+    public function warning($msg): bool
     {
-        $this->log(LOG_WARNING, $msg);
+        return $this->log(LOG_WARNING, $msg);
     }
 
-    public function info($msg): void
+    public function info($msg): bool
     {
-        $this->log(LOG_INFO, $msg);
+        return $this->log(LOG_INFO, $msg);
     }
 
-    protected function log($priority, $msg): void
+    protected function log($priority, $msg): bool
     {
-        syslog($priority, $msg);
+        return syslog($priority, $msg);
     }
 
     public function getServiceIdentifier(): string

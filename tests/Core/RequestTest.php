@@ -57,7 +57,7 @@ class RequestTest extends TestCase
         );
     }
 
-    public function tesGetPost()
+    public function testGetPost()
     {
         $this->assertEquals(
             $this->post,

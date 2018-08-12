@@ -7,6 +7,7 @@ use Akmb\Core\Exceptions\ActionNotFoundException;
 use Akmb\Core\Request;
 use Akmb\Core\Router;
 use Akmb\Core\ServiceContainer\ServiceContainer;
+use Akmb\Test\BaseTest;
 
 class DispatcherTest extends BaseTest
 {
@@ -66,9 +67,7 @@ class DispatcherTest extends BaseTest
         );
 
         $this->expectException(ActionNotFoundException::class);
-        $res = $this->dispatcher->callAction();
-
-        var_dump($res);
+        $this->dispatcher->callAction();
     }
 
     /**
@@ -98,6 +97,7 @@ class DispatcherTest extends BaseTest
     {
         $controller = $this->getMockBuilder(DefaultController::class)
             ->disableOriginalConstructor()
+            ->setMethods(['isAllowedRequestMethod'])
             ->getMock();
         $controller->expects($this->once())
             ->method('isAllowedRequestMethod')
@@ -106,6 +106,47 @@ class DispatcherTest extends BaseTest
         $this->getDispatcher(['REQUEST_URI' => '/main/index']);
         $this->dispatcher = $this->getMockBuilder(Dispatcher::class)
             ->setConstructorArgs([$this->router, $this->request, $this->serviceContainer])
+            ->setMethods(['getControllerInstance'])
+            ->getMock();
+
+        $this->dispatcher->expects($this->once())
+            ->method('getControllerInstance')
+            ->willReturn($controller);
+
+        $response = json_decode($this->dispatcher->callAction(), true);
+
+        $this->assertEquals(
+            'error',
+            $response['status']
+        );
+
+        $this->assertContains(
+            'is not allowed.',
+            $response['message']
+        );
+    }
+
+    /**
+     * @throws ActionNotFoundException
+     * @throws \Akmb\Core\Exceptions\ControllerNotFoundException
+     * @throws \Akmb\Core\ServiceContainer\Exceptions\ServiceNotFoundException
+     */
+    public function testCallActionWithValidationError()
+    {
+        $controller = $this->getMockBuilder(DefaultController::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['validate'])
+            ->getMock();
+        $controller->expects($this->once())
+            ->method('validate')
+            ->willReturn(false);
+
+        $controller->setErrors(['key' => 'invalid key']);
+
+        $this->getDispatcher(['REQUEST_URI' => '/main/index']);
+        $this->dispatcher = $this->getMockBuilder(Dispatcher::class)
+            ->setConstructorArgs([$this->router, $this->request, $this->serviceContainer])
+            ->setMethods(['getControllerInstance'])
             ->getMock();
 
         $this->dispatcher->expects($this->once())
@@ -113,8 +154,47 @@ class DispatcherTest extends BaseTest
             ->willReturn($controller);
 
         $response = $this->dispatcher->callAction();
+        $result = json_decode($response, true);
 
-        var_dump($response);
+        $this->assertEquals(
+            'error',
+            $result['status']
+        );
+
+        $this->assertContains(
+            'invalid key',
+            $result['message']
+        );
+    }
+
+    /**
+     * @throws \Akmb\Core\ServiceContainer\Exceptions\ServiceNotFoundException
+     */
+    public function testUnexpectedDispatchException()
+    {
+        $this->getDispatcher(['REQUEST_URI' => '/main/index']);
+        $this->dispatcher = $this->getMockBuilder(Dispatcher::class)
+            ->setConstructorArgs([$this->router, $this->request, $this->serviceContainer])
+            ->setMethods(['callAction'])
+            ->getMock();
+
+        $this->dispatcher->expects($this->once())
+            ->method('callAction')
+            ->willThrowException(new \Exception('Unexpected exception'));
+
+        $response = $this->dispatcher->dispatch();
+
+        $result = json_decode($response, true);
+
+        $this->assertEquals(
+            'error',
+            $result['status']
+        );
+
+        $this->assertContains(
+            'Unhandled error happened',
+            $result['message']
+        );
     }
 
     /**
