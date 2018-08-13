@@ -78,8 +78,8 @@ class Message
     public function prepareMessage(): array
     {
         $messages = [];
+        $msgId = rand(0, 255);
         if ($this->isMultiPart()) {
-            $msgId = rand(0, 255);
             $parts = $this->splitMessage();
             $total = count($parts);
             foreach ($parts as $k => $part) {
@@ -90,7 +90,7 @@ class Message
             }
         } else {
             $messages[] = [
-                'udh' => '',
+                'udh' => $this->createUdh($msgId, 1, 1),
                 'message' => $this->encodeMessage($this->getMessage())
             ];
         }
