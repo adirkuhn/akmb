@@ -27,6 +27,7 @@ RUN apk update \
                 php7-apcu \
                 php7-opcache \
                 php7-posix \
+                php7-iconv \
                 autoconf \
                 apache2 \
                 apache2-utils \

@@ -2,7 +2,8 @@
 
 $config = [
     'messageBird' => [
-        'token' => 'MESSAGE_BIRD_API_TOKEN'
+        'token' => 'MESSAGE_BIRD_API_TOKEN',
+        'originator' => 'Adir Kuhn'
     ],
 
     'redis' => [

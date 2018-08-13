@@ -20,3 +20,9 @@ psr2:
 
 unit-tests:
 	docker-compose exec -T app php ./vendor/bin/phpunit --stderr --bootstrap ./vendor/autoload.php --colors=always tests
+
+analyser:
+	docker-compose exec -T app php ./vendor/bin/phpstan analyse -l0 src tests
+
+send-messages:
+	docker-compose exec -T app php ./bin/send_message.php

@@ -36,22 +36,38 @@ try {
                 ));
 
                 $mbMessage = new \MessageBird\Objects\Message();
-                $mbMessage->originator = 'Adir Kuhn';
+                $mbMessage->originator = $config['messageBird']['originator'] ?? 'AKMB';
                 $mbMessage->recipients = [$message->getDestination()];
                 $mbMessage->setBinarySms($part['udh'], $part['message']);
 
-                $mbClient->messages->create($mbMessage);
+                $result = $mbClient->messages->create($mbMessage);
+
+                if ($result instanceof \MessageBird\Objects\Message) {
+                    echo sprintf(
+                        'Message sent - UDH [%s] DATA [%s]',
+                        $part['udh'],
+                        $part['message']
+                    );
+                    echo PHP_EOL;
+                } else {
+                    echo 'Message was not send';
+                    var_dump($result);
+                    echo PHP_EOL;
+                }
 
                 sleep(1);
             }
         } catch (\Exception $e) {
-            $logger->error(sprintf(
+            $msg = sprintf(
                 'Unable to send the message due an error [%s].',
                 $e->getMessage()
-            ));
+            );
+
+            $logger->error($msg);
 
             $logger->info('Putting the message in the queue again');
 
+            echo $msg . PHP_EOL;
             //$messageQueue->queueMessage($message);
         }
 
