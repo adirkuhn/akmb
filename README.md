@@ -126,3 +126,4 @@ make send-messages
  - Better support to GSM7 and Unicode
  - Save sent messages into database
  - Add retry option getting failed messages from database
+ - Fix PHPStan with level 7
