@@ -123,6 +123,6 @@ make send-messages
 ```
 
 # TODO
- - Better support to GSM7 and Unico
+ - Better support to GSM7 and Unicode
  - Save sent messages into database
  - Add retry option getting failed messages from database
